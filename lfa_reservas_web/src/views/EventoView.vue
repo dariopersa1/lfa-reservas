@@ -9,9 +9,9 @@
         <p>{{ evento.descripcion }}</p>
         <div class="comensales-input">
           <label for="comensales">Nº de comensales</label>
-          <input type="number" name="comensales" id="comensales">
+          <input type="number" name="comensales" v-model="px" id="comensales">
         </div>
-        <button class="btn btn-secondary">Reservar</button>
+        <button class="btn btn-secondary" @click="goToReservaForm">Reservar</button>
       </div>
     </div>
   </div>
@@ -24,7 +24,8 @@ export default {
     return {
       id: '',
       db: '',
-      evento: {}
+      evento: {},
+      px: 0
     }
   },
   methods: {
@@ -43,7 +44,9 @@ export default {
       }else{
         console.log('No document')
       }
-      
+    },
+    goToReservaForm() {
+      this.$router.push({name: 'reservaForm', params: {evento: this.id, px: this.px}})
     }
   },
   mounted() {
