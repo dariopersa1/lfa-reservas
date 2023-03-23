@@ -46,7 +46,7 @@ export default {
       }
     },
     goToReservaForm() {
-      this.$router.push({name: 'reservaForm', params: {evento: this.id, px: this.px}})
+      this.$router.push({name: 'reservaForm', params: {eventoId: this.id, px: this.px}})
     }
   },
   mounted() {

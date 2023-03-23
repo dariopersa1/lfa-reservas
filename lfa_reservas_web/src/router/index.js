@@ -23,12 +23,11 @@ const router = createRouter({
       component: EventoView
     },
     {
-      path: '/reserva/:evento/:px',
+      path: '/reserva/:eventoId/:px',
       name: 'reservaForm',
       props: true,
       component: ReservaFormView
     }
-
   ]
 })
 
