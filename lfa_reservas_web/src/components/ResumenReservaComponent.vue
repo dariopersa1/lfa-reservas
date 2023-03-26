@@ -6,8 +6,8 @@
       <img :src="evento.imagen" alt="imagen evento" width="50" height="50" style="border-radius: 50%;">
       <p>{{ evento.nombre }} - {{ evento.fecha }}</p>
       <input type="number" v-model="pers" aria-describedby="px" aria-label="Personas" :disabled="edit">
-      <button v-if="edit" class="btn btn-secondary" @click="edit = false">Edit comensales</button>
-      <button v-if="!edit" class="btn btn-primary" @click="edit = true">Save</button>
+      <button v-if="edit" class="btn btn-secondary" @click="{edit = false; $emit('onEdit')}">Edit comensales</button>
+      <button v-if="!edit" class="btn btn-primary" @click="{edit = true; $emit('editPx', pers)}">Save</button>
     </div>
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
     return {
       edit: true,
       pers: 0,
-      evento: {}
+      evento: {},
+      db: ''
     }
   },
   methods: {
@@ -42,8 +43,6 @@ export default {
       }else{
         console.log('No document')
       }
-
-      console.log(this.evento)
     }
   },
   async mounted() {
