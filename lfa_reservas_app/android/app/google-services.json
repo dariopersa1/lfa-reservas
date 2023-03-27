@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "875491824001",
+    "project_id": "lfa-reservas",
+    "storage_bucket": "lfa-reservas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875491824001:android:308b2d3f5065f079a75880",
+        "android_client_info": {
+          "package_name": "com.example.lfa_reservas_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875491824001-q4s98ptqpv4nl72kc4fberpal75tleda.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUC6qUdL11I46FWk6S2raeEIfx8bD9ucQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875491824001-q4s98ptqpv4nl72kc4fberpal75tleda.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "875491824001-mbn2fga2l9qcvqb3brsmau3m24q8sotr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lfaReservasApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>875491824001-mbn2fga2l9qcvqb3brsmau3m24q8sotr.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.875491824001-mbn2fga2l9qcvqb3brsmau3m24q8sotr</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDSL679WH3n10cEihPRSzBKNjJB5pvMOPI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>875491824001</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.lfaReservasApp</string>
+	<key>PROJECT_ID</key>
+	<string>lfa-reservas</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lfa-reservas.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:875491824001:ios:ce8a3bb0fa3b43dea75880</string>
+</dict>
+</plist>
