@@ -86,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
           .map((doc) => Reservation.fromFirestore(doc))
           .toList();
     });
-    print(_reservations);
     setState(() {
       isLoading = false;
     });
@@ -115,17 +114,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         lastDate: DateTime(2100),
                         currentDate: _selectedDate);
 
-                    if (pickedDate != null) {
+                    if (pickedDate != null && pickedDate != _selectedDate) {
                       // update the selectedDate state variable and fetch the data
                       setState(() {
                         _selectedDate = pickedDate;
                       });
+                      _fetchReservations();
                     }
                   },
-                ),
-                ElevatedButton(
-                  child: Text('Fetch Data'),
-                  onPressed: _fetchReservations,
                 ),
                 Expanded(
                   child: ListView.builder(
