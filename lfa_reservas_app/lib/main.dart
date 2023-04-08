@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'components/ReservationCard.dart';
+import 'package:intl/intl.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,86 +34,114 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class Reservation {
+  final String name;
+  final String date;
+  final int guests;
 
-  void _incrementCounter() {
+  Reservation({required this.name, required this.date, required this.guests});
+
+  factory Reservation.fromFirestore(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return Reservation(
+      name: data['nombre'] + ' ' + data['apellidos'],
+      date: data['fecha'],
+      guests: data['px'],
+    );
+  }
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  // Define a variable to hold the selected date
+  DateTime _selectedDate = DateTime.now();
+  // format the DateTime object as "dd/mm/yyyy"
+  final dateFormatter = DateFormat('dd/MM/yyyy');
+  List<Reservation> _reservations = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // initialize the selectedDate to today's date
+    _selectedDate = DateTime.now();
+  }
+
+  // Define a function to fetch the data for the selected date
+  Future<void> _fetchReservations() async {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      isLoading = true;
+    });
+    final reservations = await FirebaseFirestore.instance
+        .collection('reservas')
+        .where('fecha', isEqualTo: dateFormatter.format(_selectedDate))
+        .get();
+    setState(() {
+      _reservations = reservations.docs
+          .map((doc) => Reservation.fromFirestore(doc))
+          .toList();
+    });
+    print(_reservations);
+    setState(() {
+      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        backgroundColor: Theme.of(context).primaryColor,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                ListTile(
+                  leading: Icon(Icons.date_range),
+                  title: Text('Select a date'),
+                  subtitle: Text('${dateFormatter.format(_selectedDate)}'),
+                  onTap: () async {
+                    // show the date picker and wait for user input
+                    final pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedDate,
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime(2100),
+                        currentDate: _selectedDate);
+
+                    if (pickedDate != null) {
+                      // update the selectedDate state variable and fetch the data
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    }
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Fetch Data'),
+                  onPressed: _fetchReservations,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _reservations.length,
+                    itemBuilder: (context, index) {
+                      final reservation = _reservations[index];
+                      return Card(
+                        child: ListTile(
+                          title: Text(reservation.name),
+                          subtitle: Text('Mesa: 2'),
+                          trailing: Text('${reservation.guests} px'),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ]));
   }
 }

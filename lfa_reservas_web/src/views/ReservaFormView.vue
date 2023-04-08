@@ -192,7 +192,7 @@ export default {
     },
     async reservar() {
       this.reserva.fecha = this.evento.fecha
-      this.reserva.px = this.px
+      this.reserva.px = Number(this.px)
       this.reserva.eventoId = this.eventoId
       
       const docRef = await addDoc(collection(this.db, "reservas"), this.reserva)
