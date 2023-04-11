@@ -1,13 +1,12 @@
 <template>
   <div class="container">
-    <h1>Eventos</h1>
+    <h2>Proximos eventos</h2>
     <div class="events-list">
-      <div class="card" style="width: 28rem;" v-for="e in eventos">
-        <img :src="e.imagen" alt="imagen evento" class="card-img-top">
-        <div class="card-body">
+      <div class="card text-bg-dark" v-for="e in eventos" @click="$router.push({name: 'evento', params: {id: e.id}})">
+        <img :src="e.imagen" class="card-img" alt="imagen evento">
+        <div class="card-lfa-overlay">
           <h5 class="card-title">{{ e.nombre }}</h5>
-          <p class="card-text">{{ e.descripcion }}</p>
-          <router-link :to="'/evento/'+e.id" class="btn btn-primary">Ver más</router-link>
+          <p>{{ e.fecha }}</p>
         </div>
       </div>
     </div>
@@ -49,6 +48,35 @@ export default {
 </script>
 <style scoped>
   .container {
-    margin-top: 6rem;
+    top: 6rem;
+    position: relative;
+  }
+
+  .events-list {
+    margin-top: 16px;
+    display: flex;
+  }
+
+  .card {
+    width: 19rem;
+    height: 16rem;
+    cursor: pointer;
+    margin-right: 16px;
+  }
+
+  .card-img{
+    width: 19rem;
+    height: 16rem;
+  }
+
+  .card-lfa-overlay {
+    position: absolute;
+    /* top: 0; */
+    right: 0;
+    bottom: 0;
+    padding-left: 16px;
+    left: 0;
+    /* padding: var(--bs-card-img-overlay-padding); */
+    border-radius: var(--bs-card-inner-border-radius);
   }
 </style>
