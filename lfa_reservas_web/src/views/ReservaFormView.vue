@@ -158,7 +158,8 @@ export default {
         alergenos: [],
         comentario: '',
         px: 0,
-        eventoId: ''
+        eventoId: '',
+        timestamp: ''
       },
       onEditPx: false
     }
@@ -194,7 +195,7 @@ export default {
       this.reserva.fecha = this.evento.fecha
       this.reserva.px = Number(this.px)
       this.reserva.eventoId = this.eventoId
-      
+      this.reserva.timestamp = Date.now()
       const docRef = await addDoc(collection(this.db, "reservas"), this.reserva)
     }
   },
