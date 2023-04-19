@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="display: flex; flex-direction: column; align-items: center;">
+  <div class="container">
     <div class="row">
       <div class="col-8">
         <h2>Datos de la reserva</h2>
@@ -30,7 +30,7 @@
               </div>
               <div class="mb-3">
                 <label for="time-slots" class="form-label">Hora de llegada</label>
-                <div class="row">
+                <div class="row" style="margin-left: 0.1rem;">
                   <div class="slot-card" name="time-slots" id="time-slots" v-for="slot in slots">
                     <button type="button" :class="slot.selected ? 'btn btn-primary slot-card-selected' : 'btn btn-link'" @click="slotSelected(slot.time)" :disabled="slot.selected">{{ slot.time }}</button>
                   </div>
@@ -106,7 +106,7 @@
         <ResumenReserva :px="Number(px)" :evento-id="eventoId" @onEdit="onEditPx = true" @editPx="(pers) => {px = pers; onEditPx = false}"></ResumenReserva>
       </div>
     </div>
-    <button class="btn btn-primary" @click="reservar" style="width: fit-content;" :disabled="onEditPx">Reservar</button>
+    <button class="lfa-btn" @click="reservar" style="width: fit-content;" :disabled="onEditPx">Reservar</button>
   </div>
 </template>
 <script>
@@ -147,7 +147,14 @@ export default {
           selected: false
         }
       ],
-      evento: {},
+      evento: {
+        nombre: '',
+        descripcion: '',
+        fecha: '',
+        imagen: '',
+        aforo: '',
+        reservas: ''
+      },
       db: '',
       reserva: {
         nombre: '',
@@ -180,13 +187,12 @@ export default {
       const docSnap = await getDoc(docRef)
       
       if(docSnap.exists()){
-        this.evento = {
-          nombre: docSnap.data().nombre,
-          descripcion: docSnap.data().descripcion,
-          fecha: docSnap.data().fecha,
-          imagen: docSnap.data().imagen,
-          aforo: docSnap.data().aforo
-        }
+        this.evento.nombre = docSnap.data().nombre,
+        this.evento.descripcion = docSnap.data().descripcion,
+        this.evento.fecha = docSnap.data().fecha,
+        this.evento.imagen = docSnap.data().imagen,
+        this.evento.aforo = docSnap.data().aforo
+        this.evento.reservas = docSnap.data().reservas
       }else{
         console.log('No document')
       }
@@ -211,6 +217,14 @@ export default {
 }
 </script>
 <style scoped>
+  .container {
+    top: 6rem;
+    position: relative;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+  }
+
   .slot-card {
     width: fit-content;
     height: fit-content;

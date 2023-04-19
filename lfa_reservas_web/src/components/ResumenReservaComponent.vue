@@ -3,11 +3,15 @@
     <h2>Resumen de la reserva</h2>
     <div class="resumen-reserva">
       <p><strong>Producto</strong></p>
-      <img :src="evento.imagen" alt="imagen evento" width="50" height="50" style="border-radius: 50%;">
-      <p>{{ evento.nombre }} - {{ evento.fecha }}</p>
-      <input type="number" v-model="pers" aria-describedby="px" aria-label="Personas" :disabled="edit">
-      <button v-if="edit" class="btn btn-secondary" @click="{edit = false; $emit('onEdit')}">Edit comensales</button>
-      <button v-if="!edit" class="btn btn-primary" @click="{edit = true; $emit('editPx', pers)}">Save</button>
+      <div class="resumen-item">
+        <img :src="evento.imagen" alt="imagen evento" width="50" height="50" style="border-radius: 50%;">
+        <span class="resumen-item-text">{{ evento.nombre }} - {{ evento.fecha }}</span>
+      </div>
+      <div class="comensales-edit-form">
+        <input type="number" class="form-control" v-model="pers" aria-describedby="px" aria-label="Personas" :disabled="edit">
+        <button v-if="edit" class="lfa-btn" @click="{edit = false; $emit('onEdit')}">Edit comensales</button>
+        <button v-if="!edit" class="lfa-btn" @click="{edit = true; $emit('editPx', pers)}">Save</button>
+      </div>
     </div>
   </div>
 </template>
@@ -55,5 +59,26 @@ export default {
 }
 </script>
 <style scoped>
-  
+  .resumen-item{
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .resumen-item-text{
+    margin-left: 8px;
+  }
+
+  .comensales-edit-form {
+    display: flex;
+    align-items: center;
+  }
+
+  .form-control{
+    max-width: 10rem;
+  }
+
+  .lfa-btn {
+    margin-left: 1rem;
+  }
 </style>
