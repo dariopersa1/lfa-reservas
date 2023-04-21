@@ -112,7 +112,7 @@
 <script>
 import ResumenReserva from '../components/ResumenReservaComponent.vue'
 import firebase from '../firebaseInit';
-import { collection, getFirestore, doc, getDoc, addDoc } from 'firebase/firestore'
+import { collection, getFirestore, doc, getDoc, addDoc, increment, updateDoc } from 'firebase/firestore'
 export default {
   props: ['eventoId', 'px'],
   data() {
@@ -202,7 +202,28 @@ export default {
       this.reserva.px = Number(this.px)
       this.reserva.eventoId = this.eventoId
       this.reserva.timestamp = Date.now()
-      const docRef = await addDoc(collection(this.db, "reservas"), this.reserva)
+      
+      if(this.evento.reservas + this.reserva.px <= this.evento.aforo){
+        const docRef = await addDoc(collection(this.db, "reservas"), this.reserva)
+        const eventoRef = await doc(this.db, "eventos", this.eventoId)
+        await updateDoc(eventoRef, {
+          reservas: increment(this.reserva.px)
+        })
+        if(docRef != null) {
+          this.$toast.success('Reserva realizada con éxito')
+          await this.sleep(300)
+          this.$router.push('/')
+        }else {
+          this.$toast.error('Ha ocurrido un error al registrar la reserva, intentelo de nuevo más tarde')
+          await this.sleep(300)
+          this.$router.push('/')
+        }
+      }else{
+        this.$toast.warning('El aforo para este evento está completo, disculpe las molestias')
+      }
+    },
+    async sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
   },
   components: {
