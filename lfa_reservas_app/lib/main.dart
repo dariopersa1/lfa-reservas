@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'components/ReservationCard.dart';
 import 'package:intl/intl.dart';
 
 Future<void> main() async {
@@ -44,15 +43,97 @@ class Reservation {
   final String name;
   final String date;
   final int guests;
+  String email;
+  final String tlf;
+  final String hour;
+  final String comment;
+  final List preferences;
 
-  Reservation({required this.name, required this.date, required this.guests});
+  Reservation(
+      {required this.name,
+      required this.date,
+      required this.guests,
+      required this.email,
+      required this.comment,
+      required this.tlf,
+      required this.hour,
+      required this.preferences});
 
   factory Reservation.fromFirestore(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return Reservation(
-      name: data['nombre'] + ' ' + data['apellidos'],
-      date: data['fecha'],
-      guests: data['px'],
+        name: data['nombre'] + ' ' + data['apellidos'],
+        date: data['fecha'],
+        guests: data['px'],
+        email: data['email'],
+        comment: data['comentario'],
+        tlf: data['tlf'],
+        hour: data['hora'],
+        preferences: data['alergenos']);
+  }
+}
+
+class ReservaInfoSheet extends StatelessWidget {
+  final Reservation reservation;
+  ReservaInfoSheet({Key? key, required this.reservation}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 600,
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        children: [
+          ListTile(
+              leading: const Icon(Icons.person),
+              title: Text(reservation.name),
+              trailing: Text('${reservation.guests} px'),
+              visualDensity: const VisualDensity(vertical: 0)),
+          const Divider(),
+          ListTile(
+              title: const Text('Teléfono'),
+              subtitle: Text(reservation.tlf.toString()),
+              visualDensity: const VisualDensity(vertical: -2)),
+          ListTile(
+              title: const Text('Email'),
+              subtitle: Text(reservation.email.toString()),
+              visualDensity: const VisualDensity(vertical: -2)),
+          reservation.preferences.isNotEmpty
+              ? ListView.builder(
+                  itemCount: reservation.preferences.length,
+                  itemBuilder: ((context, index) {
+                    final preference = reservation.preferences[index];
+                    return (Chip(label: Text(preference.toString())));
+                  }))
+              : const ListTile(title: Text('Sin preferencias')),
+          reservation.comment.isNotEmpty
+              ? ListTile(
+                  title: const Text('Comentario'),
+                  subtitle: Text(reservation.comment.toString()),
+                  visualDensity: const VisualDensity(vertical: -2))
+              : const ListTile(
+                  title: Text('Sin comentarios'),
+                  visualDensity: VisualDensity(vertical: -2)),
+          ListTile(
+              title: const Text('Hora'),
+              subtitle: Text(reservation.hour.toString()),
+              visualDensity: const VisualDensity(vertical: -2)),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Llamar al cliente'),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Anular reserva'),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
@@ -133,6 +214,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           title: Text(reservation.name),
                           subtitle: Text('Mesa: 2'),
                           trailing: Text('${reservation.guests} px'),
+                          onTap: () {
+                            // Show the bottom sheet
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ReservaInfoSheet(
+                                    reservation: reservation);
+                              },
+                            );
+                          },
                         ),
                       );
                     },
