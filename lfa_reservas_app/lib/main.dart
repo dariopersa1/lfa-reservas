@@ -79,7 +79,8 @@ class ReservaInfoSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 600,
+      //width: 200.0,
+      height: 600.0,
       child: ListView(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
@@ -98,13 +99,27 @@ class ReservaInfoSheet extends StatelessWidget {
               title: const Text('Email'),
               subtitle: Text(reservation.email.toString()),
               visualDensity: const VisualDensity(vertical: -2)),
+          const ListTile(
+              title: Text('Preferencias'),
+              visualDensity: VisualDensity(vertical: -2)),
           reservation.preferences.isNotEmpty
-              ? ListView.builder(
-                  itemCount: reservation.preferences.length,
-                  itemBuilder: ((context, index) {
-                    final preference = reservation.preferences[index];
-                    return (Chip(label: Text(preference.toString())));
-                  }))
+              ? SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                  child: Row(mainAxisSize: MainAxisSize.max, children: [
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: List<Widget>.generate(
+                        reservation.preferences.length,
+                        (int idx) {
+                          return Chip(
+                              label: Text(
+                                  reservation.preferences[idx].toString()));
+                        },
+                      ).toList(),
+                    )
+                  ]))
               : const ListTile(title: Text('Sin preferencias')),
           reservation.comment.isNotEmpty
               ? ListTile(
